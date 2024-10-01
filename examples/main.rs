@@ -16,13 +16,13 @@ fn spawn_entities(mut cmds: Commands) {
 
     cmds.spawn_square(Args{
         pos: [20.0, 20.0, 0.0],
-        ..Default::default()
+        ..default()
     });
 
     cmds.spawn_square(Args{
         pos: [-20.0, -20.0, 0.0],
         color: Color::RED,
-        ..Default::default()
+        ..default()
     });
-    
+
 }
