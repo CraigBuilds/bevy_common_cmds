@@ -1,0 +1,22 @@
+# Reuse compiled outputs across different crates. E.g,
+# - If Crate A and B both depend on C, C is only compiled once).
+# - If Crate A depends on B, after modifying B, only A is recompiled
+# - If My project (crate A) uses bevy, and I then create a new project (crate B),
+# and if they both use the same bevy version, toolchain, and settings, sccache will reuse the compiled bevy.
+
+[build]
+rustc-wrapper = "sccache"  # or "cachepot"
+
+# How is this different from Incremental compilation?
+
+# crate_a/
+# ├── Cargo.toml
+# └── src/
+#     ├── foo.rs
+#     ├── bar.rs
+#     └── main.rs
+
+# Initial build: All files (main.rs, foo.rs, bar.rs) are compiled.
+# After modifying foo.rs: Only foo.rs and main.rs are recompiled; bar.rs remains unchanged.
+# After modifying bar.rs: Only bar.rs and main.rs are recompiled; foo.rs remains unchanged.
+# After modifying main.rs: Only main.rs is recompiled; foo.rs and bar.rs remain unchanged.
