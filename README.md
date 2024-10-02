@@ -10,7 +10,7 @@ use bon::bon;
 impl CmdExtensions for Commands<'_, '_> {
     #[builder]
     #[builder(finish_fn = spawn)]
-    fn 2d_camera(
+    fn build_2d_camera(
         &mut self,
 
         #[builder(into, default = [0.0, 0.0])] 
@@ -27,7 +27,7 @@ impl CmdExtensions for Commands<'_, '_> {
 //use 
 
 //with defaults
-cmds.2d_camera().spawn();
+cmds.build_2d_camera().spawn();
 //with custom values
-cmds.2d_camera().pos([0.0, 0.0]).rotation(0.0).spawn();
+cmds.build_2d_camera().pos([0.0, 0.0]).rotation(0.0).spawn();
 ```
