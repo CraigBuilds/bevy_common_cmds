@@ -4,10 +4,11 @@
  - use BON builder macro
 
  ```rust
+use bon::bon;
 
 #[bon]
 impl CmdExtensions for Commands<'_, '_> {
-    #[bon::builder]
+    #[builder]
     #[builder(finish_fn = spawn)]
     fn 2d_camera(
         &mut self,
