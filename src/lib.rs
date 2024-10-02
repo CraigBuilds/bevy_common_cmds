@@ -2,12 +2,19 @@ use bevy::prelude::*;
 use bevy::ecs::system::EntityCommands;
 use bevy::color::palettes::css as css;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
-// use bevy_rapier2d::prelude::*;
+#[allow(unused_imports)]
+use bevy_collider_gen::rapier2d::single_convex_hull_collider_translated;
+#[allow(unused_imports)]
+use bevy_collider_gen::Edges;
 
 pub trait CmdExtensions {
     fn spawn_2d_camera(&mut self, args: Args) -> EntityCommands;
-    fn spawn_square(&mut self, args: Args) -> EntityCommands;
+    fn spawn_pbr_square(&mut self, args: Args) -> EntityCommands;
     fn spawn_square_spite(&mut self, args: Args) -> EntityCommands;
+}
+pub trait EntityCmdExtensions {
+    fn add_collider(&mut self, args: Args) -> &mut Self;
+    fn add_dynamics(&mut self, args: Args) -> &mut Self;
 }
 
 impl CmdExtensions for Commands<'_, '_> {
@@ -25,7 +32,10 @@ impl CmdExtensions for Commands<'_, '_> {
         )
     }
 
-    fn spawn_square(&mut self, args: Args) -> EntityCommands {
+    //TODO split into 2 functions. Spawn pbr shape, and spawn pbr square.
+    //square cannot reuse handle, as it might be given something that isn't a square. 
+    //maybe don;t even have the square function, just have a pbr shape function that takes a shape.
+    fn spawn_pbr_square(&mut self, args: Args) -> EntityCommands {
         
         let mesh_handle = match args.mesh {
             Some(GetHandle::Reuse(h)) => {h.clone()},
@@ -50,6 +60,7 @@ impl CmdExtensions for Commands<'_, '_> {
         )
     }
 
+    //maybe turn this into spawn_spite, that accepts a spite.
     fn spawn_square_spite(&mut self, args: Args) -> EntityCommands {
         self.spawn(
             SpriteBundle {
@@ -69,17 +80,11 @@ impl CmdExtensions for Commands<'_, '_> {
 
 }
 
-pub trait EntityCmdExtensions {
-    fn add_collider(&mut self, args: Args) -> &mut Self;
-    fn add_dynamics(&mut self, args: Args) -> &mut Self;
-}
 impl<'a> EntityCmdExtensions for EntityCommands<'a> {
     
-    /// Create a collider from mesh.
+    /// Create a collider from mesh. Seems to be missing from 2d...
     fn add_collider(&mut self, _args: Args) -> &mut Self {
-        // self.insert(
-
-        // );
+        // let colliders = multi_convex_polyline_collider_translated(args.sprite_image);
         self
     }
 
@@ -90,10 +95,10 @@ impl<'a> EntityCmdExtensions for EntityCommands<'a> {
 }
 
 
-
 pub enum GetHandle<'a, T: Asset> {
     Reuse(Handle<T>),
-    NewFrom(&'a mut Assets<T>)
+    NewFrom(&'a mut Assets<T>),
+    TakeFrom(Handle<T>, &'a mut Assets<T>)
 }
 
 pub struct Args<'a> {

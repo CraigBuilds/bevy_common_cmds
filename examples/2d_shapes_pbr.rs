@@ -16,7 +16,7 @@ fn spawn_entities(
 
     cmds.spawn_2d_camera(Args::default());
 
-    cmds.spawn_square(Args{
+    cmds.spawn_pbr_square(Args{
         mesh: Some(GetHandle::NewFrom(&mut meshes)),
         mat: Some(GetHandle::NewFrom(&mut materials)),
         ..default()
