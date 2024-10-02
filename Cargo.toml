@@ -1,5 +1,5 @@
 [package]
-name = "bevy_common_cmds"
+name = "bevy_cmd_extensions"
 version = "0.1.0"
 edition = "2021"
 

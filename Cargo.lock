@@ -429,6 +429,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_cmd_extensions"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_rapier2d",
+]
+
+[[package]]
 name = "bevy_color"
 version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -441,14 +449,6 @@ dependencies = [
  "serde",
  "thiserror",
  "wgpu-types",
-]
-
-[[package]]
-name = "bevy_common_cmds"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_rapier2d",
 ]
 
 [[package]]

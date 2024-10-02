@@ -1,6 +1,5 @@
 use bevy::prelude::*;
-use bevy_common_cmds::*;
-use rapier2d::prelude::*;
+use bevy_cmd_extensions::*;
 
 fn main() {
     App::new()
@@ -26,7 +25,3 @@ fn spawn_entities(mut cmds: Commands) {
         ..default()
     });
 }
-
-// fn setup_physics(mut cmds: Commands, query: Query<Entity, &>) {
-
-// }
