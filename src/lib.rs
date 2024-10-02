@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::ecs::system::EntityCommands;
 use bevy::color::palettes::css as css;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+// use bevy_rapier2d::prelude::*;
 
 pub trait CmdExtensions {
     fn spawn_2d_camera(&mut self, args: Args) -> EntityCommands;
@@ -67,6 +68,28 @@ impl CmdExtensions for Commands<'_, '_> {
     }
 
 }
+
+pub trait EntityCmdExtensions {
+    fn add_collider(&mut self, args: Args) -> &mut Self;
+    fn add_dynamics(&mut self, args: Args) -> &mut Self;
+}
+impl<'a> EntityCmdExtensions for EntityCommands<'a> {
+    
+    /// Create a collider from mesh.
+    fn add_collider(&mut self, _args: Args) -> &mut Self {
+        // self.insert(
+
+        // );
+        self
+    }
+
+    /// Move under gravity, friction, etc.
+    fn add_dynamics(&mut self, _args: Args) -> &mut Self {
+        self
+    }
+}
+
+
 
 pub enum GetHandle<'a, T: Asset> {
     Reuse(Handle<T>),
