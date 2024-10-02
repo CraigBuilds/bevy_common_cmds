@@ -14,10 +14,10 @@ impl CmdExtensions for Commands<'_, '_> {
         &mut self,
 
         #[builder(into, default = [0.0, 0.0])] 
-        pos: &[f32, 2],
+        with_pos: &[f32, 2],
 
         #[builder(default)] 
-        rotation: f32
+        with_rotation: f32
 
     ) -> EntityCommands {
         ...
