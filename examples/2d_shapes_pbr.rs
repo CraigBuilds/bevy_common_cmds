@@ -8,8 +8,17 @@ fn main() {
         .run();
 }
 
-fn spawn_entities(mut cmds: Commands) {
+fn spawn_entities(
+    mut cmds: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>
+) {
 
     cmds.spawn_2d_camera(Args::default());
 
+    cmds.spawn_square(Args{
+        mesh: Some(GetHandle::NewFrom(&mut meshes)),
+        mat: Some(GetHandle::NewFrom(&mut materials)),
+        ..default()
+    });
 }

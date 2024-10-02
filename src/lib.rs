@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy::ecs::system::EntityCommands;
 use bevy::color::palettes::css as css;
-use std::collections::HashMap;
+use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+
 pub trait CmdExtensions {
     fn spawn_2d_camera(&mut self, args: Args) -> EntityCommands;
     fn spawn_square(&mut self, args: Args) -> EntityCommands;
@@ -24,34 +25,25 @@ impl CmdExtensions for Commands<'_, '_> {
     }
 
     fn spawn_square(&mut self, args: Args) -> EntityCommands {
-        //get or insert the handle from/into the cache if given, otherwise create a new one and drop the handle.
-        let handle = if let  Some(handles_cache) = args.handles_cache {
-            if let Some(handle) = handles_cache.get("string") {
-                handle.clone()
-            }
-            else {
-                let asset_container: &mut Assets<Mesh> = args.mesh_assets.unwrap();
-                let handle = asset_container.add(Mesh::from(Rectangle::new(50.0, 100.0)));
-                handles_cache.insert("square".to_string(), handle.clone());
-                handle
-            }
-        }
-        else {
-            let asset_container: &mut Assets<Mesh> = args.mesh_assets.unwrap();
-            let handle = asset_container.add(Mesh::from(Rectangle::new(50.0, 100.0)));
-            handle
+        
+        let mesh_handle = match args.mesh {
+            Some(GetHandle::Reuse(h)) => {h.clone()},
+            Some(GetHandle::NewFrom(a)) => {a.add(Rectangle::new(10.0, 10.0))}
+            _=> panic!("requires a mesh")
         };
-
+        let mat_handle = match args.mat {
+            Some(GetHandle::Reuse(h)) => {h.clone()},
+            Some(GetHandle::NewFrom(a)) => {a.add(args.color)}
+            _=> panic!("requires a mesh")  
+        };          
+        
+        //spawn the entity
         self.spawn(
-            PbrBundle {
-                mesh: handle,
-                transform: Transform {
-                    translation: Vec3::new(args.pos[0], args.pos[1], args.pos[2]),
-                    rotation: Quat::from_rotation_z(args.rotation),
-                    //remove this?
-                    scale: Vec3::new(args.scale, args.scale, args.scale),
-                    ..Default::default()
-                },
+            //TODO get working with pbr.i.e standard material instead of color material
+            MaterialMesh2dBundle {
+                mesh: Mesh2dHandle(mesh_handle),
+                material: mat_handle,
+                transform: Transform::from_xyz(50., 0., 0.),
                 ..Default::default()
             }
         )
@@ -76,15 +68,18 @@ impl CmdExtensions for Commands<'_, '_> {
 
 }
 
+pub enum GetHandle<'a, T: Asset> {
+    Reuse(Handle<T>),
+    NewFrom(&'a mut Assets<T>)
+}
+
 pub struct Args<'a> {
     pub pos: [f32; 3],
-    //radians
-    pub rotation: f32,
+    pub rotation: f32, //radians
     pub scale: f32,
     pub color: Color,
-    //this only needs to be passed in the first time you want to make the asset. Subsequent versions will use the cached handles.
-    pub mesh_assets: Option<&'a mut Assets<Mesh>>,
-    pub handles_cache: Option<&'a mut HashMap<String, Handle<Mesh>>>
+    pub mesh: Option<GetHandle<'a, Mesh>>,
+    pub mat: Option<GetHandle<'a, ColorMaterial>>
 }
 
 impl<'a> Default for Args<'a> {
@@ -94,8 +89,8 @@ impl<'a> Default for Args<'a> {
             rotation: 0.0,
             scale: 10.0,
             color: Color::WHITE,
-            mesh_assets: None,
-            handles_cache: None
+            mesh: None,
+            mat: None
         }
     }
 }
