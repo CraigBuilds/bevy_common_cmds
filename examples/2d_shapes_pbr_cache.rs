@@ -36,9 +36,18 @@ fn spawn_entities(
 
     cmds.spawn_2d_camera(Args::default());
 
+    let mesh_h = mesh_cache.0.get("10x10rect").unwrap();
+    let mat_h = mat_cache.0.get("red").unwrap();
+
     cmds.spawn_square(Args{
-        mesh: Some(GetHandle::Reuse(mesh_cache.0.get("10x10rect").unwrap().clone())),
-        mat: Some(GetHandle::Reuse(mat_cache.0.get("red").unwrap().clone())),
+        mesh: Some(GetHandle::Reuse(mesh_h.clone())),
+        mat: Some(GetHandle::Reuse(mat_h.clone())),
+        ..default()
+    });
+
+    cmds.spawn_square(Args{
+        mesh: Some(GetHandle::Reuse(mesh_h.clone())),
+        mat: Some(GetHandle::Reuse(mat_h.clone())),
         ..default()
     });
 }
